@@ -7,6 +7,12 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
+- name: Ensure br_netfilter is enabled.
+  modprobe:
+    name: br_netfilter
+    state: present
+  become: true
+
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:
