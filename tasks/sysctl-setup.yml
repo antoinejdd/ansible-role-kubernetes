@@ -7,11 +7,24 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
+# See: https://github.com/geerlingguy/ansible-role-kubernetes/pull/103#issuecomment-998779903
 - name: Ensure br_netfilter is enabled.
   modprobe:
     name: br_netfilter
     state: present
-  become: true
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
+
+# See: https://github.com/geerlingguy/ansible-role-kubernetes/pull/103#issuecomment-998779903
+- name: Allow IPv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
 
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
